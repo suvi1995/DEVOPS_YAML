@@ -1,0 +1,23 @@
+---
+- hosts: ubuntu
+  user: ansible
+  become: yes
+  vars:
+    tomurl:  https://downloads.apache.org/tomcat/tomcat-X.Y.Z.tar.gz
+  tasks:
+    - name: Download tomcat url
+      ansible.builtin.apt_key:
+        url: "{{tomurl}}"
+        state: present
+    - name: Extract tomacat
+      ansible.builtin.unarchive:
+        src: apache-tomcat-X.Y.Z.tar.gz
+        dest: /opt/tomcat
+    - name: update and install jenkins
+      ansible.builtin.apt:
+        name: jenkins
+        update_cache: yes
+        state: present
+    when:
+        - ansible_facts['distribution'] == "Ubuntu"
+        - ansible_facts['distribution_major_version'] == "18"
