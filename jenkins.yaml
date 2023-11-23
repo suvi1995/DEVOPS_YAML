@@ -20,3 +20,6 @@
         name: jenkins
         update_cache: yes
         state: present
+    when:
+        - ansible_facts['distribution'] == "Ubuntu"
+        - ansible_facts['distribution_major_version'] == "18"
