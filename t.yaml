@@ -1,2 +1,10 @@
 ---
-name
+- hosts: ubuntu
+  user: ansible
+  become: yes
+  tasks:
+    - name: update and install tomcat
+      ansible.builtin.apt:
+        name: tomcat
+        update_cache: yes
+        state: present
