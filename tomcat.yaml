@@ -13,6 +13,18 @@
       ansible.builtin.unarchive:
         src: apache-tomcat-X.Y.Z.tar.gz
         dest: /opt/tomcat
+    - name: Change file ownership, group and permissions
+      ansible.builtin.file:
+        path: /opt/tomcat/
+        owner: tomcat
+        group: tomcat
+        mode: '700'
+    - name: Add a user to tomcat-users.xml
+      ansible.builtin.lineinfile:
+        path: /opt/tomcat/conf/tomcat-users.xml
+        regexp: '<tomcat-users>'  # Look for a line containing '<tomcat-users>'
+        line: '  <user username="admin" password="aadmin" roles="manager-gui,admin-gui,manager-script"/>'  # Add the user line
+        insertafter: '<tomcat-users>'
     - name: update and install jenkins
       ansible.builtin.apt:
         name: jenkins
