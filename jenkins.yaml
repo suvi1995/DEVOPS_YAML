@@ -5,6 +5,7 @@
   vars:
     keys: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
     repos: 'deb http://pkg.jenkins.io/debian-stable binary/'
+    jen: jenkins
   tasks:
     - name: Add an Apt signing key, uses whichever key is at the URL
       ansible.builtin.apt_key:
@@ -17,7 +18,7 @@
         state: present
     - name: update and install jenkins
       ansible.builtin.apt:
-        name: jenkins
+        name: "{{jen}}"
         update_cache: yes
         state: present
     when:
