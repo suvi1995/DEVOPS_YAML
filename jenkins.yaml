@@ -11,16 +11,22 @@
       ansible.builtin.apt_key:
         url: "{{keys}}"
         state: present
+      when:
+        - ansible_facts['distribution'] == "Ubuntu"
+        - ansible_facts['distribution_major_version'] == "22"
     - name: somerepo | apt source
       ansible.builtin.apt_repository:
         repo: "{{repos}}"
         update_cache: yes
         state: present
+      when:
+        - ansible_facts['distribution'] == "Ubuntu"
+        - ansible_facts['distribution_major_version'] == "22"  
     - name: update and install jenkins
       ansible.builtin.apt:
         name: "{{jen}}"
         update_cache: yes
         state: present
-    when:
+     when:
         - ansible_facts['distribution'] == "Ubuntu"
-        - ansible_facts['distribution_major_version'] == "18"
+        - ansible_facts['distribution_major_version'] == "22"
