@@ -3,27 +3,26 @@
   user: ansible
   become: yes
   vars:
-    tomurl:  https://downloads.apache.org/tomcat/tomcat-X.Y.Z.tar.gz
+    tomurl: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.83/bin/apache-tomcat-9.0.83.tar.gz
   tasks:
-    - name: Download tomcat url
-      ansible.builtin.apt_key:
-        url: "{{tomurl}}"
-        state: present
+    - name: Add Tomcat User
+      ansible.builtin.user:
+        name: tomcat
+        home: /opt/tomcat
+        uid: 1234  # Replace with the desired UID
+        shell: /bin/false
+        createhome: yes
+        system: yes
     - name: Extract tomacat
       ansible.builtin.unarchive:
-        src: apache-tomcat-X.Y.Z.tar.gz
+        src: '{{tomurl}}'
         dest: /opt/tomcat
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
-        path: /opt/tomcat/
+        path: /opt/tomcat/conf
         owner: tomcat
         group: tomcat
         mode: '700'
-    - name: Edit port number in server
-      ansible.builtin.replace:
-        path: /opt/tomcat/conf/server.xml
-        regexp: '8080'
-        replace: '9090'
     - name: Add a user to tomcat-users.xml
       ansible.builtin.lineinfile:
         path: /opt/tomcat/conf/tomcat-users.xml
