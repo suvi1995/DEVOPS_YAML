@@ -19,17 +19,29 @@
         owner: tomcat
         group: tomcat
         mode: '700'
+    - name: Edit port number in server
+      ansible.builtin.replace:
+        path: /opt/tomcat/conf/server.xml
+        regexp: '8080'
+        replace: '9090'
     - name: Add a user to tomcat-users.xml
       ansible.builtin.lineinfile:
         path: /opt/tomcat/conf/tomcat-users.xml
-        regexp: '<tomcat-users>'  # Look for a line containing '<tomcat-users>'
-        line: '  <user username="admin" password="aadmin" roles="manager-gui,admin-gui,manager-script"/>'  # Add the user line
-        insertafter: '<tomcat-users>'
-    - name: update and install jenkins
-      ansible.builtin.apt:
-        name: jenkins
-        update_cache: yes
-        state: present
-    when:
-        - ansible_facts['distribution'] == "Ubuntu"
-        - ansible_facts['distribution_major_version'] == "18"
+        regexp: 'tomcat-users'  
+        line: 'user username="admin" password="aadmin" roles="manager-gui,admin-gui,manager-script"' 
+        insertafter: 'tomcat-users'
+     - name: comment the context.xml
+      ansible.builtin.replace:
+        path: /opt/tomcat/conf/server.xml
+        regexp: '<Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />'
+        replace: '<!--  <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" /> -->'
+    - name: reload tomcat
+      ansible.builtin.systemd_service:
+        state: restarted
+        daemon_reload: true
+        name: tomcat9
+    - name: Start Tomcat service
+      ansible.builtin.systemd_service:
+        name: tomcat9  
+        state: started
+    
