@@ -9,9 +9,7 @@
       ansible.builtin.user:
         name: tomcat
         home: /opt/tomcat
-        uid: 1234  # Replace with the desired UID
         shell: /bin/false
-        createhome: yes
         system: yes
     - name: Extract tomacat
       ansible.builtin.unarchive:
@@ -22,7 +20,7 @@
         path: /opt/tomcat/conf
         owner: tomcat
         group: tomcat
-        mode: '700'
+        mode: '755'
     - name: Add a user to tomcat-users.xml
       ansible.builtin.lineinfile:
         path: /opt/tomcat/conf/tomcat-users.xml
