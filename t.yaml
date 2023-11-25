@@ -5,6 +5,6 @@
   tasks:
     - name: update and install tomcat
       ansible.builtin.apt:
-        name: tomcat
+        name: tomcat9
         update_cache: yes
         state: present
