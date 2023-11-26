@@ -33,7 +33,7 @@
         state: link
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
-        path: /opt/tomcat/apache-tomcat-9.0.83
+        path: /opt/tomcat/latest
         owner: tomcat
         group: tomcat
         recurse: yes
