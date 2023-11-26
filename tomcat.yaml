@@ -24,7 +24,12 @@
         group: tomcat
         recurse: yes
     - name: excute the shell
-      ansible.builtin.shell: sh -c 'chmod +x /opt/tomcat/latest/bin/*.sh'
+      ansible.builtin.shell: sh -c 'chmod +x /opt/tomcat/apache-tomcat-9.0.83:/bin/*.sh'
+    - name: Touch the same file, but add/remove some permissions
+      ansible.builtin.file:
+        path: /etc/systemd/system/
+        state: touch
+        mode: '0755'
     - name: Add a user to tomcat-users.xml
       ansible.builtin.lineinfile:
         path: /opt/tomcat/conf/tomcat-users.xml
