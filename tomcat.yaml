@@ -23,8 +23,8 @@
         owner: tomcat
         group: tomcat
         recurse: yes
-    - name: excute the shell
-      ansible.builtin.shell: sh -c 'chmod +x /opt/tomcat/apache-tomcat-9.0.83:/bin/*.sh'
+    - name: Set execute permission on Tomcat scripts
+      command: sudo sh -c 'chmod +x /opt/tomcat/apache-tomcat-9.0.83/bin/*.sh'
     - name: Touch the same file, but add/remove some permissions
       ansible.builtin.file:
         path: /etc/systemd/system/
