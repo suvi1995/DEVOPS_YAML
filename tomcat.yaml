@@ -5,49 +5,59 @@
   vars:
     tomurl: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.83/bin/apache-tomcat-9.0.83.tar.gz
   tasks:
+    - name: update and install java
+      ansible.builtin.apt:
+        name: openjdk-11-jdk
+        update_cache: yes
+        state: present
+    - name: update and install tomcat
+      ansible.builtin.group:
+        name: tomcat
+        state: present
     - name: Add Tomcat User
       ansible.builtin.user:
         name: tomcat
         home: /opt/tomcat
         shell: /bin/false
+        system: yes
         create_home: yes
-        system: yes   
     - name: Extract tomacat
       ansible.builtin.unarchive:
         src: '{{tomurl}}'
         remote_src: yes
         dest: /opt/tomcat
+    - name: create a symbolic link
+      ansible.builtin.file:
+        src: /opt/tomcat/apache-tomcat-9.0.83
+        dest: /opt/tomcat/latest
+        state: link
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
-        path: /opt/tomcat/
+        path: /opt/tomcat/apache-tomcat-9.0.83
         owner: tomcat
         group: tomcat
         recurse: yes
     - name: Set execute permission on Tomcat scripts
       command: sudo sh -c 'chmod +x /opt/tomcat/apache-tomcat-9.0.83/bin/*.sh'
-    - name: Touch the same file, but add/remove some permissions
-      ansible.builtin.file:
-        path: /etc/systemd/system/
-        state: touch
-        mode: '0755'
+    - name: create systemd unit file
+      ansible.builtin.copy:
+        src: tomcat.service
+        dest: /etc/systemd/system/tomcat.service
+        owner: tomcat
+        group: tomcat
     - name: Add a user to tomcat-users.xml
       ansible.builtin.lineinfile:
-        path: /opt/tomcat/conf/tomcat-users.xml
-        regexp: 'tomcat-users'  
-        line: 'user username="admin" password="aadmin" roles="manager-gui,admin-gui,manager-script"' 
-        insertafter: 'tomcat-users'
-     - name: comment the context.xml
-      ansible.builtin.replace:
-        path: /opt/tomcat/conf/server.xml
-        regexp: '<Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />'
-        replace: '<!--  <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" /> -->'
+        path: /opt/tomcat/latest/conf/tomcat-users.xml
+        regexp: 'tomcat-users'
+        line: '<user username="admin" password="aadmin" roles="manager-gui,admin-gui,manager-script>"'
+        insertafter: '</tomcat-users>'
     - name: reload tomcat
       ansible.builtin.systemd_service:
         state: restarted
         daemon_reload: true
-        name: tomcat9
+        name: tomcat
     - name: Start Tomcat service
       ansible.builtin.systemd_service:
-        name: tomcat9  
+        name: tomcat
         state: started
     
