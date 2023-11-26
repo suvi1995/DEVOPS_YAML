@@ -23,6 +23,8 @@
         owner: tomcat
         group: tomcat
         recurse: yes
+    - name: excute the shell
+      ansible.builtin.shell: sh -c 'chmod +x /opt/tomcat/latest/bin/*.sh'
     - name: Add a user to tomcat-users.xml
       ansible.builtin.lineinfile:
         path: /opt/tomcat/conf/tomcat-users.xml
