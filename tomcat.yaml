@@ -14,10 +14,10 @@
     - name: Extract tomacat
       ansible.builtin.unarchive:
         src: '{{tomurl}}'
-        dest: /opt/tomcat
+        dest: /opt/
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
-        path: /opt/tomcat/conf
+        path: /opt/tomcat/apache-tomcat-9.0.83/conf
         owner: tomcat
         group: tomcat
         mode: '755'
