@@ -10,19 +10,19 @@
         name: tomcat
         home: /opt/tomcat
         shell: /bin/false
-        system: yes
         create_home: yes
+        system: yes   
     - name: Extract tomacat
       ansible.builtin.unarchive:
         src: '{{tomurl}}'
         remote_src: yes
-        dest: /opt/
+        dest: /opt/tomcat
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
         path: /opt/tomcat/
         owner: tomcat
         group: tomcat
-        mode: '755'
+        recurse: yes
     - name: Add a user to tomcat-users.xml
       ansible.builtin.lineinfile:
         path: /opt/tomcat/conf/tomcat-users.xml
