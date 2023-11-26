@@ -28,27 +28,21 @@
         dest: /opt/tomcat
     - name: create a symbolic link
       ansible.builtin.file:
-        src: /opt/tomcat/apache-tomcat-9.0.83
+        src: apache-tomcat-9.0.83
         dest: /opt/tomcat/latest
         state: link
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
-        path: /opt/tomcat/latest
+        path: /opt/tomcat
         owner: tomcat
         group: tomcat
-        mode: 0755
+        recurse: yes
     - name: Set execute permission on Tomcat scripts
       command: sudo sh -c 'chmod +x /opt/tomcat/apache-tomcat-9.0.83/bin/*.sh'
-    - name: create tomcat.service
+    - name: create systemd unit file
       ansible.builtin.copy:
         src: tomcat.service
         dest: /etc/systemd/system/tomcat.service
-        owner: tomcat
-        group: tomcat
-    - name: create context.xml
-      ansible.builtin.copy:
-        src: context.xml
-        dest: /opt/tomcat/latest/webapps/host-manager/META-INF/context.xml
         owner: tomcat
         group: tomcat
     - name: Add a user to tomcat-users.xml
@@ -57,6 +51,12 @@
         regexp: 'tomcat-users'
         line: '<user username="admin" password="aadmin" roles="manager-gui,admin-gui,manager-script>"'
         insertafter: '</tomcat-users>'
+    - name: create systemd unit file
+      ansible.builtin.copy:
+        src: context.xml
+        dest: /opt/tomcat/latest/webapps/host-manager/META-INF/context.xml
+        owner: tomcat
+        group: tomcat
     - name: reload tomcat
       ansible.builtin.systemd_service:
         state: restarted
@@ -66,4 +66,3 @@
       ansible.builtin.systemd_service:
         name: tomcat
         state: started
-    
