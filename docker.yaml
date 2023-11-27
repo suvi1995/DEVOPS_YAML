@@ -3,34 +3,36 @@
   user: ansible
   become: yes
   tasks:
+    - name: update and install java
+      ansible.builtin.apt:
+        name: openjdk-11-jdk
+        update_cache: yes
+        state: present
     - name: install docker
       ansible.builtin.apt:
-         name: docker.io
-         update_cache: yes 
-         state: present
+        name: docker.io
+        state: present
+        update_cache: yes
     - name: add group
       ansible.builtin.user:
         name: "ansible"
         group: "docker"
         append: yes
-    - name: Log into DockerHub
-      community.docker.docker_login:
-        username: suvitha
-        password: sugasuvi@123
-    - name: Tag and push to docker hub
-      community.docker.docker_image:
-        name: alpine
-        tag: 7
-        repository: suvitha/alpine:7
-        push: true
-        source: local  # make sure that the image is already available on the local docker daemon, does not try to build, pull or load the image.
     - name: Pull an image
       community.docker.docker_image:
         name: alpine
-        tag: 7
+        tag: latest
         source: pull
         pull:
           platform: amd64
-    
-    
-         
+    - name: Log into DockerHub
+      community.docker.docker_login:
+        username: suvitha
+        password: Sugasuvi@123
+    - name: Tag and sh to docker hub
+      community.docker.docker_image:
+        name: alpine
+        tag: latest
+        repository: suvitha/alpine:latest
+        push: true
+        source: local
