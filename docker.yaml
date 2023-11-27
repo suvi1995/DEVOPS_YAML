@@ -1,0 +1,11 @@
+---
+- hosts: ubuntu
+  user: ansible
+  become: yes
+  tasks:
+    - name: install docker
+      ansible.builtin.apt:
+         name: docker.io
+         update_cache: yes 
+         state: present
+         
