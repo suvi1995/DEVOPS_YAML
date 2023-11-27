@@ -47,11 +47,11 @@
         owner: tomcat
         group: tomcat
     - name: Add a user to tomcat-users.xml
-      ansible.builtin.lineinfile:
-        path: /opt/tomcat/latest/conf/tomcat-users.xml
-        regexp: 'tomcat-users'
-        line: '<user username="admin" password="aadmin" roles="manager-gui,admin-gui,manager-script>"'
-        insertafter: '</tomcat-users>'
+      ansible.builtin.copy:
+        src: tomcat.service
+        dest: /etc/systemd/system/tomcat.service
+        owner: tomcat
+        group: tomcat
     - name: create systemd unit file
       ansible.builtin.copy:
         src: context.xml
