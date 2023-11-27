@@ -8,4 +8,28 @@
          name: docker.io
          update_cache: yes 
          state: present
+    - name: add group
+      ansible.builtin.user:
+        name: "ansible"
+        group: "docker"
+        append: yes
+    - name: Log into DockerHub
+      community.docker.docker_login:
+        username: suvitha
+        password: sugasuvi@123
+    - name: Tag and push to docker hub
+      community.docker.docker_image:
+        name: alpine
+        tag: 7
+        repository: suvitha/alpine:7
+        push: true
+        source: local  # make sure that the image is already available on the local docker daemon, does not try to build, pull or load the image.
+    - name: Pull an image
+      community.docker.docker_image:
+        name: alpine
+        tag: 7
+        source: pull
+        pull:
+          platform: amd64
+    
          
