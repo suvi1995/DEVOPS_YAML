@@ -52,6 +52,12 @@
         dest: /etc/systemd/system/tomcat.service
         owner: tomcat
         group: tomcat
+    - name: add permission 
+      ansible.builtin.copy:
+        src: context.xml
+        dest: /opt/tomcat/latest/webapps/manager/META-INF/context.xml
+        owner: tomcat
+        group: tomcat
     - name: create systemd unit file
       ansible.builtin.copy:
         src: context.xml
