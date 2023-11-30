@@ -48,8 +48,8 @@
         group: tomcat
     - name: Add a user to tomcat-users.xml
       ansible.builtin.copy:
-        src: tomcat.service
-        dest: /etc/systemd/system/tomcat.service
+        src: tomcat-users.xml
+        dest: /opt/tomcat/latest/conf/tomcat-users.xml
         owner: tomcat
         group: tomcat
     - name: add permission 
