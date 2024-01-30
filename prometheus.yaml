@@ -1,1 +1,49 @@
-t
+---
+- hosts: ubuntu
+  user: ansible
+  become: yes
+  vars:
+    promurl: https://github.com/prometheus/prometheus/releases/download/v2.28.1/prometheus-2.28.1.linux-amd64.tar.gz
+  tasks:
+    - name: update cache
+      ansible.builtin.apt:
+        update_cache: yes
+    - name: Extract tomacat
+      ansible.builtin.unarchive:
+        src: '{{promurl}}'
+        remote_src: yes
+        dest: /opt/tomcat
+     - name: useradd
+       ansible.builtin.user:
+         name: prometheus
+         shell: /bin/false
+         create_home: false
+      - name: Create temporary build directory
+        ansible.builtin.tempfile:
+          name: prometheus
+          path: /etc
+          state: directory
+      - name: Create temporary build directory1
+        ansible.builtin.tempfile:
+          name: prometheus
+          path: /var/lib
+          state: directory
+      - name: groupadd
+        ansible.builtin.group:
+          name: prometheus
+          state: present
+      - name: Change file ownership, group and permissions
+        ansible.builtin.file:
+          path: /etc/prometheus
+          owner: prometheus
+          group: prometheus
+         recurse: yes
+         mode: 0755
+       - name: Change file ownership, group and permissions
+        ansible.builtin.file:
+          path: /var/lib/prometheus
+          owner: prometheus
+          group: prometheus
+          recurse: yes
+          mode: 0755
+    
