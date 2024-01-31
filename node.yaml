@@ -19,11 +19,19 @@
         shell : /bin/false
         update_cache: yes
         system: yes
-     - name: start grafana server
-      ansible.builtin.systemd_service:
-        name: grafana-server
+     - name: Add a user to node_exporter service
+       ansible.builtin.copy:
+        src: node_exporter.service
+        dest: /etc/systemd/system/node_exporter.service
+        mode: '0755'
+     - name: reload the daemon
+       ansible.builtin.systemd_service:
+        daemon_reload: true
+     - name: start node_exporter
+       ansible.builtin.systemd_service:
+        name: node_exporter
         state: started
-    - name: enable grafana server
+    - name: enable node_exporter
       ansible.builtin.systemd_service:
-        name: grafana-server
+        name: node_exporter
         enabled: true
