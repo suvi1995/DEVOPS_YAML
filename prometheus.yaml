@@ -6,22 +6,29 @@
     promurl: https://github.com/prometheus/prometheus/releases/download/v2.46.0/prometheus-2.46.0.linux-amd64.tar.gz
   tasks:
     - name: useradd
-       ansible.builtin.user:
-         name: prometheus
-         shell: /bin/false
-         create_home: false
+      ansible.builtin.user:
+        name: prometheus
+        shell: /bin/false
+        create_home: false
     - name: Create temporary build directory
       ansible.builtin.tempfile:
-          name: prometheus
-          path: /etc
-          state: directory
-          mode: '0755'
+        name: prometheus
+        path: /etc
+        state: directory
+        mode: '0755'
     - name: Create temporary build directory1
       ansible.builtin.tempfile:
-          name: prometheus
-          path: /var/lib
-          state: directory
-          mode: '0755'
+        name: prometheus
+        path: /var/lib
+        state: directory
+        mode: '0755'
+    - name: chnage ownership
+      ansible.builtin.file:
+        path: /var/lib/prometheus
+        owner: prometheus
+        group: prometheus
+        recurse: yes
+        mode: 0755
     - name: Extract tomacat
       ansible.builtin.unarchive:
         src: '{{promurl}}'
@@ -33,39 +40,39 @@
       ansible.builtin.commant: mv prometheus.yml /etc/prometheus
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
-        path: /var/lib/prometheus
+        path: /etc/prometheus
         owner: prometheus
         group: prometheus
         recurse: yes
         mode: 0755
-    - name: move node_exporter
+    - name: move prometheus
       ansible.builtin.commant: mv prometheus /usr/local/bin/
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
-          path: /etc/prometheus
-          owner: prometheus
-          group: prometheus
-          recurse: yes
-          mode: 0755
-   - name: Add a user to node_exporter service
-     ansible.builtin.copy:
+        path: /usr/local/bin/prometheus
+        owner: prometheus
+        group: prometheus
+        recurse: yes
+        mode: 0755
+    - name: Add a user to node_exporter service
+      ansible.builtin.copy:
         src: prometheus.yml
         dest: /etc/prometheus/prometheus.yml
         mode: '0755'
-   - name: Add a user to node_exporter service
-     ansible.builtin.copy:
+    - name: Add a user to node_exporter service
+      ansible.builtin.copy:
         src: prometheus.service
         dest: /etc/systemd/system/prometheus.service
         mode: '0755'
-  - name: reload the daemon
-    ansible.builtin.systemd_service:
+    - name: reload the daemon
+      ansible.builtin.systemd_service:
         daemon_reload: true
-  - name: prometheus
-    ansible.builtin.systemd_service:
+    - name: prometheus
+      ansible.builtin.systemd_service:
         name: prometheus
         state: started
-  - name: enable node_exporter
-    ansible.builtin.systemd_service:
+    - name: enable node_exporter
+      ansible.builtin.systemd_service:
         name: prometheus
         enabled: true
     
