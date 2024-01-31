@@ -48,5 +48,20 @@
           group: prometheus
          recurse: yes
          mode: 0755
-      
+    - name: Add a user to node_exporter service
+       ansible.builtin.copy:
+        src: prometheus.service
+        dest: /etc/systemd/system/prometheus.service
+        mode: '0755'
+    - name: reload the daemon
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+     - name: prometheus
+       ansible.builtin.systemd_service:
+        name: prometheus
+        state: started
+    - name: enable node_exporter
+      ansible.builtin.systemd_service:
+        name: prometheus
+        enabled: true
     
