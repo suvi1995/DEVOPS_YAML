@@ -3,23 +3,22 @@
   user: ansible
   become: yes
   vars:
-    keys: https://packages.grafana.com/gpg.key
+    nodeurl: https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
     repos: "deb https://packages.grafana.com/oss/deb stable main"
  tasks:
-    - name: Add an Apt signing key, uses whichever key is at the URL
-      ansible.builtin.apt_key:
-        url: "{{keys}}"
-        state: present
-    - name: somerepo | apt source
-      ansible.builtin.apt_repository:
-        repo: "{{repos}}"
+    - name: download and unzip the node_exporter url
+      ansible.builtin.unarchive:
+        src: '{{nodeurl}}'
+        remote_src: yes
+        dest: /tmp
+    - name: move node_exporter
+      ansible.builtin.commant: mv node_exporter-*.*-amd64/node_exporter /usr/local/bin/
+    - name: useradd 
+      ansible.builtin.user:
+        name: node_exporter
+        shell : /bin/false
         update_cache: yes
-        state: present 
-    - name: update and install grafana
-      ansible.builtin.apt:
-        name: grafana
-        update_cache: yes
-        state: present
+        system: yes
      - name: start grafana server
       ansible.builtin.systemd_service:
         name: grafana-server
