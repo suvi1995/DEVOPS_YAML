@@ -11,13 +11,13 @@
         shell: /bin/false
         create_home: false
     - name: Create temporary build directory
-      ansible.builtin.tempfile:
+      ansible.builtin.file:
+        state: directory
         name: prometheus
         path: /etc
-        state: directory
         mode: '0755'
     - name: Create temporary build directory1
-      ansible.builtin.tempfile:
+      ansible.builtin.file:
         name: prometheus
         path: /var/lib
         state: directory
@@ -34,19 +34,19 @@
         src: '{{promurl}}'
         remote_src: yes
         dest: /tmp
-    - name: move console
-      ansible.builtin.commant: mv console* /etc/prometheus
-    - name: move prometheus yaml
-      ansible.builtin.commant: mv prometheus.yml /etc/prometheus
-    - name: Change file ownership, group and permissions
+        mode: '0755'
+    - name: move the con file
+      ansible.builtin.copy:
+        src: /tmp/prometheus-2.46.0.linux-amd64
+        dest: /etc/prometheus
+        mode: '0755'
+   - name: Change file ownership, group and permissions
       ansible.builtin.file:
-        path: /etc/prometheus
+        path: /usr/local/bin/prometheus
         owner: prometheus
         group: prometheus
         recurse: yes
-        mode: 0755
-    - name: move prometheus
-      ansible.builtin.commant: mv prometheus /usr/local/bin/
+        mode: '0755'
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
         path: /usr/local/bin/prometheus
