@@ -37,29 +37,43 @@
         mode: '0755'
     - name: move the con file
       ansible.builtin.copy:
-        src: /tmp/prometheus-2.46.0.linux-amd64
+        src: /tmp/prometheus-2.46.0.linux-amd64/consoles
         dest: /etc/prometheus
         mode: '0755'
-   - name: Change file ownership, group and permissions
-      ansible.builtin.file:
-        path: /usr/local/bin/prometheus
-        owner: prometheus
-        group: prometheus
-        recurse: yes
+    - name: move the cons file
+      ansible.builtin.copy:
+        src: /tmp/prometheus-2.46.0.linux-amd64/console_libraries
+        dest: /etc/prometheus
+        mode: '0755'
+    - name: move the prome file
+      ansible.builtin.copy:
+        src: /tmp/prometheus-2.46.0.linux-amd64/prometheus
+        dest: /etc/prometheus
         mode: '0755'
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
-        path: /usr/local/bin/prometheus
+        path: /etc/prometheus
         owner: prometheus
         group: prometheus
         recurse: yes
-        mode: 0755
-    - name: Add a user to node_exporter service
+    - name: move the prometheus file
+      ansible.builtin.copy:
+        src: /tmp/prometheus-2.46.0.linux-amd64/prometheus
+        dest: /usr/local/bin/
+        mode: '0755'
+    - name: Change the ownership, group and permissions
+      ansible.builtin.file:
+        path: /usr/local/bin/
+        owner: prometheus
+        group: prometheus
+        recurse: yes
+        mode: '0755'
+    - name: Add a user to prometheus service
       ansible.builtin.copy:
         src: prometheus.yml
         dest: /etc/prometheus/prometheus.yml
         mode: '0755'
-    - name: Add a user to node_exporter service
+    - name: Add a user to prometheus service
       ansible.builtin.copy:
         src: prometheus.service
         dest: /etc/systemd/system/prometheus.service
@@ -75,4 +89,3 @@
       ansible.builtin.systemd_service:
         name: prometheus
         enabled: true
-    
