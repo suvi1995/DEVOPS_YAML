@@ -5,6 +5,9 @@
   vars:
     promurl: https://github.com/prometheus/prometheus/releases/download/v2.46.0/prometheus-2.46.0.linux-amd64.tar.gz
   tasks:
+    - name: Update apt packages
+      ansible.builtin.apt:
+        update_cache: yes
     - name: useradd
       ansible.builtin.user:
         name: prometheus
@@ -12,14 +15,12 @@
         create_home: false
     - name: Create temporary build directory
       ansible.builtin.file:
+        path: /etc/prometheus
         state: directory
-        name: prometheus
-        path: /etc
         mode: '0755'
     - name: Create temporary build directory1
       ansible.builtin.file:
-        name: prometheus
-        path: /var/lib
+        path: /var/lib/prometheus
         state: directory
         mode: '0755'
     - name: chnage ownership
