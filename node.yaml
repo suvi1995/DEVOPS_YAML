@@ -5,30 +5,32 @@
   vars:
     nodeurl: https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
     repos: "deb https://packages.grafana.com/oss/deb stable main"
- tasks:
+  tasks:
     - name: download and unzip the node_exporter url
       ansible.builtin.unarchive:
         src: '{{nodeurl}}'
         remote_src: yes
         dest: /tmp
-    - name: move node_exporter
-      ansible.builtin.commant: mv node_exporter-*.*-amd64/node_exporter /usr/local/bin/
-    - name: useradd 
+    - name: move node exporter
+      ansible.builtin.copy:
+        src: /tmp/node_exporter-1.6.1.linux-amd64/node_exporter
+        dest: /usr/local/bin/
+        mode: '0755'
+    - name: useradd
       ansible.builtin.user:
         name: node_exporter
         shell : /bin/false
-        update_cache: yes
         system: yes
-     - name: Add a user to node_exporter service
-       ansible.builtin.copy:
+    - name: Add a user to node_exporter service
+      ansible.builtin.copy:
         src: node_exporter.service
         dest: /etc/systemd/system/node_exporter.service
         mode: '0755'
-     - name: reload the daemon
-       ansible.builtin.systemd_service:
+    - name: reload the daemon
+      ansible.builtin.systemd_service:
         daemon_reload: true
-     - name: start node_exporter
-       ansible.builtin.systemd_service:
+    - name: start node_exporter
+      ansible.builtin.systemd_service:
         name: node_exporter
         state: started
     - name: enable node_exporter
