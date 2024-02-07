@@ -48,7 +48,7 @@
         mode: '0755'
     - name: move the prome file
       ansible.builtin.copy:
-        src: /tmp/prometheus-2.46.0.linux-amd64/prometheus
+        src: /tmp/prometheus-2.46.0.linux-amd64/prometheus.yml
         dest: /etc/prometheus
         mode: '0755'
     - name: Change file ownership, group and permissions
