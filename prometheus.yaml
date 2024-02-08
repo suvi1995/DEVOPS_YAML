@@ -64,7 +64,8 @@
         mode: '0755'
     - name: Change the ownership, group and permissions
       ansible.builtin.file:
-        path: /usr/local/bin/prometheus
+        path: /usr/local/bin/
+        name: prometheus
         owner: prometheus
         group: prometheus
         recurse: yes
