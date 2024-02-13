@@ -1,0 +1,24 @@
+ansibleplaybook: invoke.....
+Ansible tool: Ansible
+Playbook file path in workspace: /etc/ansible/maven.yaml
+Inventory file path in workspace: /etc/ansible/hosts
+SSH connection credentials:
+---------------------
+user with secerate key
+ansible
+
+Disable the host SSH key check
+
+
+pipeline{
+   agent any
+   stages{
+       stage("excute playbook"){
+           steps{
+            ansiblePlaybook credentialsId: 'jenkinsans', disableHostKeyChecking: true, installation: 'Ansible', inventory: '/etc/ansible/host', playbook: '/etc/ansible/maven.yaml'
+           }
+      }
+   }
+
+}
+
