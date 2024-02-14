@@ -1,3 +1,8 @@
+name
+ansible
+Path to ansible executables directory:
+/usr/bin
+
 ansibleplaybook: invoke.....
 Ansible tool: Ansible
 Playbook file path in workspace: /etc/ansible/maven.yaml
