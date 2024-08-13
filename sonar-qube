@@ -1,1 +1,55 @@
-ho
+---
+- hosts: ubuntu
+  user: ansible
+  become: yes
+  vars:
+    keys: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    repos: "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main"
+  tasks:
+    - name: update and install java
+      ansible.builtin.apt:
+        name: openjdk-11-jdk
+        update_cache: yes
+        state: present
+     - name: Add the PostgreSQL repository
+       ansible.builtin.apt_repository:
+         repo: "{{repos}}"
+         state: present
+     - name: Add the PostgreSQL signing key.
+       ansible.builtin.apt_key:
+         url: "{{keys}}"
+         state: present
+         update_cache: yes
+     - name: install PostgraSQL
+       ansible.builtin.apt:
+         name: postgresql postgresql-contrib
+         state: present
+         update_cache: yes
+     - name: Make sure a service unit is running
+       ansible.builtin.systemd_service:
+         state: started
+         name: postgresql
+     - name: Change postgres user password
+       ansible.builtin.command:
+        cmd: echo "postgres:NEW_PASSWORD" | chpasswd
+       vars:
+        ansible_become_password: "Sonar"
+     - name: Create a user 'johnd' with a home directory
+       ansible.builtin.user:
+         name: sonar
+         create_home: yes
+     - name: install zip utility
+       ansible.builtin.apt:
+         name: zip
+         state: present
+         update_cache: yes
+     - name: download sonarqube url
+       ansible.builtin.unarchive:
+         src: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.6.1.59531.zip
+         dest: /opt
+         remote_src: yes
+       
+      
+     
+  
+       
